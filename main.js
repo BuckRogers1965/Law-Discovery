@@ -11,22 +11,15 @@ async function setupPyodide() {
 
         outputDiv.innerHTML = '<p class="status-loading">Loading Physics Disentangler Engine...</p>';
         
-        // --- THIS IS THE FIX ---
         // Fetch the Python code first.
         const pythonCode = await (await fetch('./law_discovery.py')).text();
         
-        // Now, run the entire setup within a single asynchronous block.
-        // This includes defining the class AND creating the instance.
-        // runPythonAsync ensures the browser doesn't hang.
-        await pyodide.runPythonAsync(`
-            # --- Paste the entire content of law_discovery.py here ---
-            # --- Or, more cleanly, pass it as a variable if it's large ---
-            ${pythonCode}
+        // Combine the fetched code with the instantiation command.
+        // This is the most robust way to avoid indentation errors.
+        const fullPythonCode = pythonCode + "\n\n# Create the global instance\nengine = EnhancedPhysicsDisentangler()";
 
-            # Now, create the global instance
-            engine = EnhancedPhysicsDisentangler()
-        `);
-        // --- END OF FIX ---
+        // Run the combined script asynchronously.
+        await pyodide.runPythonAsync(fullPythonCode);
 
         outputDiv.innerHTML = '<p class="status-ready">✅ Environment Ready. Please define a hypothesis.</p>';
         console.log("Physics Disentangler engine is ready.");
