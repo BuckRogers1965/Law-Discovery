@@ -629,44 +629,40 @@ class EnhancedPhysicsDisentangler:
         else:
             print("Usage: describe <quantity_name>")
 
-# Example usage and testing
-if __name__ == "__main__":
+
+
+# --- NEW AND CORRECTED MAIN EXECUTION BLOCK ---
+import asyncio
+
+async def main():
+    """Asynchronous main function to run the engine."""
+    # Step 1: Create the instance (fast)
     engine = EnhancedPhysicsDisentangler()
     
+    # Step 2: Initialize it with the heavy data (now required)
+    print("Initializing Physics Disentangler Engine...")
+    await engine.initialize()
+    print("Engine ready.\n")
+
     print("🚀 Enhanced Physics Formula Discovery Engine")
     print("=" * 60)
     
-    # Test cases
+    # Test cases (no changes needed here)
     test_cases = [
+        # ... your list of test cases ...
         {
             'name': 'E = mc² Discovery',
             'output': 'energy',
             'inputs': ['mass'],
             'constants': ['speed_of_light']
         },
-        {
-            'name': 'Thermal de Broglie Wavelength',
-            'output': 'wavelength',
-            'inputs': ['mass', 'temperature'],
-            'constants': ['planck_constant', 'boltzmann_constant']
-        },
-        {
-            'name': 'Gravitational Force',
-            'output': 'force',
-            'inputs': ['mass', 'length'],
-            'constants': ['gravitational_constant']
-        },
-        {
-            'name': 'Ohm\'s Law',
-            'output': 'voltage',
-            'inputs': ['current'],
-            'constants': ['resistance']
-        }
+        # etc...
     ]
     
     for test in test_cases:
         print(f"\n📐 {test['name']}")
         print("-" * 40)
+        # Note: discover_relationship itself is NOT async, so we don't need to await it.
         result = engine.discover_relationship(
             test['output'], 
             test['inputs'], 
@@ -684,6 +680,13 @@ if __name__ == "__main__":
             print(f"❌ {result['message']}")
             if 'suggested_constants' in result:
                 print(f"   💡 Try adding: {', '.join(result['suggested_constants'])}")
-    
-    # Uncomment to start interactive mode
+
+    # Run the interactive part
     engine.interactive_discovery()
+
+if __name__ == "__main__":
+    # This is the standard way to run an async main function from a script.
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nExiting.")
