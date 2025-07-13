@@ -46,12 +46,22 @@ class EnhancedPhysicsDisentangler:
     - Unit system support
     - Interactive discovery mode
     """
-    
+
+    # --- CHANGE 1: __init__ is now lightweight and doesn't build the library ---
     def __init__(self, unit_system: UnitSystem = UnitSystem.SI):
         self.unit_system = unit_system
+        self.quantities = {} # Start with an empty library
+        self.derived_formulas = {}
+    
+    # --- CHANGE 2: New async method for heavy initialization ---
+    async def initialize(self):
+        """Asynchronously builds the quantity library."""
+        import asyncio
+        # This is where the heavy work now happens.
         self.quantities = self._build_quantity_library()
-        self.derived_formulas = {}  # Cache for discovered relationships
-        
+        # We can add a small sleep to ensure the event loop can breathe, though it might not be necessary.
+        await asyncio.sleep(0.01) 
+
     def _build_quantity_library(self) -> Dict[str, PhysicalQuantity]:
         """Extended library of physical quantities"""
         base_quantities = {

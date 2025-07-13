@@ -11,18 +11,30 @@ async function setupPyodide() {
 
         outputDiv.innerHTML = '<p class="status-loading">Loading Physics Disentangler Engine...</p>';
         
-        // Fetch the Python code first.
+        // Fetch the Python code.
         const pythonCode = await (await fetch('./law_discovery.py')).text();
         
-        // Combine the fetched code with the instantiation command.
-        // This is the most robust way to avoid indentation errors.
-        const fullPythonCode = pythonCode + "\n\n# Create the global instance\nengine = EnhancedPhysicsDisentangler()";
-
-        // Run the combined script asynchronously.
-        await pyodide.runPythonAsync(fullPythonCode);
+        // Run the script to define the class. This is fast.
+        await pyodide.runPythonAsync(pythonCode);
+        
+        // --- THIS IS THE NEW TWO-STAGE INITIALIZATION ---
+        
+        // Stage 1: Create the instance. The __init__ is now lightweight and fast.
+        pyodide.runPython("engine = EnhancedPhysicsDisentangler()");
+        
+        // Stage 2: Call the new async initialize() method to do the heavy lifting.
+        // This runs the _build_quantity_library without blocking the UI.
+        const engine = pyodide.globals.get('engine');
+        await engine.initialize();
+        
+        // --- END OF THE FIX ---
 
         outputDiv.innerHTML = '<p class="status-ready">✅ Environment Ready. Please define a hypothesis.</p>';
         console.log("Physics Disentangler engine is ready.");
+        
+        // Clean up the global proxy to avoid memory leaks
+        engine.destroy();
+
         return pyodide;
     } catch (error) {
         outputDiv.innerHTML = `<p class="status-error">CRITICAL ERROR during initialization: ${error}</p>`;
