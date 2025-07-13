@@ -1,28 +1,32 @@
 // --- Pyodide Engine & UI Orchestration ---
 
-// --- Pyodide Engine & UI Orchestration ---
-
 async function setupPyodide() {
     const outputDiv = document.getElementById('output');
     outputDiv.innerHTML = '<p class="status-loading">Initializing Python Environment...</p>';
     try {
         let pyodide = await loadPyodide();
         
-        // --- THIS IS THE FIX ---
-        // We now tell Pyodide to load both numpy and sympy before we do anything else.
         outputDiv.innerHTML = '<p class="status-loading">Loading Scientific Libraries (NumPy, SymPy)...</p>';
         await pyodide.loadPackage(["numpy", "sympy"]);
-        // --- END OF FIX ---
 
         outputDiv.innerHTML = '<p class="status-loading">Loading Physics Disentangler Engine...</p>';
         
-        // Fetch and run your main Python script
+        // --- THIS IS THE FIX ---
+        // Fetch the Python code first.
         const pythonCode = await (await fetch('./law_discovery.py')).text();
-        pyodide.runPython(pythonCode);
         
-        // Create an instance of the engine
-        const engineInstanceCode = "engine = EnhancedPhysicsDisentangler()";
-        pyodide.runPython(engineInstanceCode);
+        // Now, run the entire setup within a single asynchronous block.
+        // This includes defining the class AND creating the instance.
+        // runPythonAsync ensures the browser doesn't hang.
+        await pyodide.runPythonAsync(`
+            # --- Paste the entire content of law_discovery.py here ---
+            # --- Or, more cleanly, pass it as a variable if it's large ---
+            ${pythonCode}
+
+            # Now, create the global instance
+            engine = EnhancedPhysicsDisentangler()
+        `);
+        // --- END OF FIX ---
 
         outputDiv.innerHTML = '<p class="status-ready">✅ Environment Ready. Please define a hypothesis.</p>';
         console.log("Physics Disentangler engine is ready.");
