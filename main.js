@@ -1,10 +1,19 @@
 // --- Pyodide Engine & UI Orchestration ---
 
+// --- Pyodide Engine & UI Orchestration ---
+
 async function setupPyodide() {
     const outputDiv = document.getElementById('output');
     outputDiv.innerHTML = '<p class="status-loading">Initializing Python Environment...</p>';
     try {
         let pyodide = await loadPyodide();
+        
+        // --- THIS IS THE FIX ---
+        // We now tell Pyodide to load both numpy and sympy before we do anything else.
+        outputDiv.innerHTML = '<p class="status-loading">Loading Scientific Libraries (NumPy, SymPy)...</p>';
+        await pyodide.loadPackage(["numpy", "sympy"]);
+        // --- END OF FIX ---
+
         outputDiv.innerHTML = '<p class="status-loading">Loading Physics Disentangler Engine...</p>';
         
         // Fetch and run your main Python script
