@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Physics Disentangler: An AI-Assisted Discovery Engine</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google tag (gtag.js) if you want it -->
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Physics Disentangler</h1>
+            <p class="subtitle">An AI-Assisted Discovery Engine</p>
+        </header>
+
+        <main>
+            <div class="description">
+                <p>This tool uses dimensional analysis to discover physical laws from a set of quantities.</p>
+                <p>Provide an output quantity and at least one input. The engine will attempt to find a valid relationship, even suggesting and adding necessary constants automatically.</p>
+                 <p>Need to see the library? <a href="#" id="showQuantitiesLink">Click here for a list of available quantities</a>.</p>
+            </div>
+
+            <div class="input-grid">
+                <div class="form-group">
+                    <label for="output_quantity">Output Quantity</label>
+                    <input type="text" id="output_quantity" placeholder="e.g., energy">
+                </div>
+                <div class="form-group">
+                    <label for="input_quantities">Input Quantities (comma-separated)</label>
+                    <input type="text" id="input_quantities" placeholder="e.g., mass, velocity">
+                </div>
+                <div class="form-group">
+                    <label for="constants_to_include">Optional Constants (comma-separated)</label>
+                    <input type="text" id="constants_to_include" placeholder="e.g., speed_of_light">
+                </div>
+            </div>
+
+            <div class="controls">
+                <div class="checkbox-group">
+                    <input type="checkbox" id="auto_search" checked>
+                    <label for="auto_search">Enable Auto-Search (engine will add constants to find a solution)</label>
+                </div>
+                <button id="discoverButton">Disentangle Law</button>
+            </div>
+
+            <hr>
+            <h3>Discovery Process & Result:</h3>
+            <div id="output" class="output-area">
+                <p class="placeholder">Your result will appear here...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>Engine based on the principles of Dimensional Analysis and The Knowledge Pattern. Created by J. Rogers.</p>
+            <p><a href="https://github.com/your-username/your-repo-name" target="_blank">View on GitHub</a></p>
+        </footer>
+    </div>
+    
+    <!-- Modal for Quantities List -->
+    <div id="quantitiesModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">×</span>
+            <h3>Available Physical Quantities</h3>
+            <input type="text" id="quantitySearch" placeholder="Search for a quantity...">
+            <ul id="quantityList">
+                <!-- List will be populated by JavaScript -->
+            </ul>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+    <script src="main.js"></script>
+</body>
+</html>
