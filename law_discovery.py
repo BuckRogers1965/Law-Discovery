@@ -121,15 +121,26 @@ class EnhancedPhysicsDisentangler:
         }
         return base_quantities
 
+    # --- ADD THIS HELPER FUNCTION INSIDE THE CLASS ---
+    def _to_python_list(self, js_proxy_or_list):
+        """
+        Safely converts a potential Pyodide JsProxy to a Python list.
+        If it's already a list, it does nothing.
+        """
+        # Check if the object has a 'to_py' method, which identifies it as a Pyodide proxy.
+        if hasattr(js_proxy_or_list, 'to_py'):
+            return js_proxy_or_list.to_py()
+        # If not, it's already a Python list, so just return it as is.
+        return js_proxy_or_list
+
     def discover_relationship(self, output_quantity: str, input_quantities: List[str], constants_to_include: Optional[List[str]] = None, auto_search: bool = False, verbose: bool = False) -> Dict:
         """Main discovery engine."""
         
-        # --- THIS IS THE FIX ---
-        # Explicitly convert the incoming JavaScript Proxies to Python lists.
-        # The .to_py() method does this conversion.
-        input_quantities = input_quantities.to_py()
-        constants_to_include = constants_to_include.to_py()
-        # --- END OF THE FIX ---
+        # --- THIS IS THE ROBUST FIX ---
+        # Use our new helper function to safely convert the inputs.
+        input_quantities = self._to_python_list(input_quantities)
+        constants_to_include = self._to_python_list(constants_to_include)
+        # --- END OF THE ROBUST FIX ---
 
         if not self.initialized:
             return {'success': False, 'message': 'FATAL ERROR: Engine not initialized. The initialize() method must be called first.'}
