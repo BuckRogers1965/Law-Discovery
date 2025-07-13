@@ -133,7 +133,44 @@ class EnhancedPhysicsDisentangler:
         # If not, it's already a Python list, so just return it as is.
         return js_proxy_or_list
 
-    def discover_relationship(self, output_quantity: str, input_quantities: List[str], constants_to_include: Optional[List[str]] = None, auto_search: bool = False, verbose: bool = False) -> Dict:
+    def discover_relationship(self, output_quantity: str, input_quantities: list, constants_to_include: list, auto_search: bool, verbose: bool) -> dict:
+        print("Python: FAKE discover_relationship called inside REAL engine.")
+        
+        # We don't need the _to_python_list helper here because this is the echo test
+        # and we aren't using the lists in a way that would crash.
+
+        if not self.initialized:
+            return {
+                'success': False,
+                'message': "INTERNAL TEST ERROR: The engine was not initialized."
+            }
+
+        # Just re-using the known-good echo logic
+        inputs_str = ", ".join(map(str, input_quantities)) if input_quantities else "None"
+        constants_str = ", ".join(map(str, constants_to_include)) if constants_to_include else "None"
+        
+        formula_str = (
+            f"HYBRID TEST SUCCESS:\n"
+            f"  - Engine Initialized: {self.initialized}\n"
+            f"  - Quantities Loaded: {len(self.quantities)}\n"
+            f"  - Echoing Inputs:\n"
+            f"    - Output: '{output_quantity}'\n"
+            f"    - Inputs: [{inputs_str}]\n"
+            f"    - Constants: [{constants_str}]\n"
+            f"    - Auto-Search: {auto_search}"
+        )
+        
+        return {
+            'success': True,
+            'formula': formula_str,
+            'message': 'This test proves the engine can initialize. The crash is in the REAL discover_relationship.',
+            'validation': {
+                'confidence_score': 1.0,
+                'warnings': []
+            }
+        }
+
+    def discover_relationship_back(self, output_quantity: str, input_quantities: List[str], constants_to_include: Optional[List[str]] = None, auto_search: bool = False, verbose: bool = False) -> Dict:
         """Main discovery engine."""
         
         # --- THIS IS THE ROBUST FIX ---
