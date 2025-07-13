@@ -122,7 +122,15 @@ class EnhancedPhysicsDisentangler:
         return base_quantities
 
     def discover_relationship(self, output_quantity: str, input_quantities: List[str], constants_to_include: Optional[List[str]] = None, auto_search: bool = False, verbose: bool = False) -> Dict:
-        """Main discovery engine. (Unchanged from your original)"""
+        """Main discovery engine."""
+        
+        # --- THIS IS THE FIX ---
+        # Explicitly convert the incoming JavaScript Proxies to Python lists.
+        # The .to_py() method does this conversion.
+        input_quantities = input_quantities.to_py()
+        constants_to_include = constants_to_include.to_py()
+        # --- END OF THE FIX ---
+
         if not self.initialized:
             return {'success': False, 'message': 'FATAL ERROR: Engine not initialized. The initialize() method must be called first.'}
         
