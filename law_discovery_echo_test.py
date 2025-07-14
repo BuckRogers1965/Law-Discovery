@@ -1,4 +1,4 @@
-# law_discovery.py (FINAL, v3, ACTUALLY FUCKING WORKS ECHO TEST)
+# law_discovery.py 
 
 import numpy
 import sympy
@@ -37,11 +37,6 @@ class EnhancedPhysicsDisentangler:
             f"  - Auto-Search: {auto_search}"
         )
         
-        #
-        #
-        # DUMBASS, YOU FORGOT THIS FUCKING RETURN STATEMENT. HERE IT IS.
-        #
-        #
         return {
             'success': True,
             'formula': formula_str,
